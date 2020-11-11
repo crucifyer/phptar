@@ -1,7 +1,7 @@
 # php tar compress gzip, bzip2 file and http stream download
 
 ```bash
-$ php composer.phar require "crucifyer/phptar" "dev-master"
+$ php composer.phar require "crucifyer/phptar" "dev-main"
 ```
 
 ```php
