@@ -1,0 +1,23 @@
+{
+    "name": "crucifyer/phptar",
+    "description": "tar compress gzip, bzip2 file and http stream download",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Song Hyo-Jin",
+            "email": "shj@xenosi.de",
+            "homepage": "https://github.com/crucifyer/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Xeno\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4"
+    }
+}
