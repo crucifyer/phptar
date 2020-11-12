@@ -20,7 +20,24 @@ class Tar
 			'gname' => $gname
 		];
 		// star ext header not implemented
-		if($block['size'] > 077777777777) throw new ErrorException('file size over', E_USER_ERROR);
+		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
+		$this->headers[] = $block;
+	}
+
+	public function addString($string, $name, $permis = 0644, $uid = 0, $gid = 0, $uname = 'root', $gname = 'root') {
+		$block = [
+			'file' => null,
+			'body' => $string,
+			'size' => strlen($file),
+			'name' => $name ? $name : basename($file),
+			'permis' => $permis,
+			'uid' => $uid,
+			'gid' => $gid,
+			'uname' => $uname,
+			'gname' => $gname
+		];
+		// star ext header not implemented
+		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
 		$this->headers[] = $block;
 	}
 
@@ -126,7 +143,8 @@ class Tar
 	private function write($fp) {
 		foreach($this->headers as $block) {
 			$this->f['write']($fp, $this->makeHeader($block));
-			$this->fileCopy($fp, $block['file']);
+			if($block['file']) $this->fileCopy($fp, $block['file']);
+			else $this->f['write']($fp, $block['body']);
 			$pad = $block['size'] % 512;
 			if($pad) $this->f['write']($fp, str_repeat("\0", 512 - $pad));
 		}
@@ -141,18 +159,18 @@ class Tar
 	}
 
 	public function stream($filename, $type = self::DETECT) {
+		if(!$filename && $type == self::DETECT) throw new \ErrorException('no name stream must set type', E_USER_ERROR);
 		$this->set($filename, $type, 'stream');
 		$fp = $this->f['open']('php://output', 'w');
 		switch($type) {
 			case self::GZ:
-				throw new ErrorException('gzip stream not supported', E_USER_ERROR);
-				break;
+				throw new \ErrorException('gzip stream not supported', E_USER_ERROR);
 			case self::BZ:
 				stream_filter_append($fp, 'bzip2.compress');
 				break;
 		}
 		header('Content-Type: application/'.$this->f['type']);
-		header('Content-Disposition: attachment; filename='.basename($filename));
+		if($filename) header('Content-Disposition: attachment; filename='.basename($filename));
 		$this->write($fp);
 	}
 }
