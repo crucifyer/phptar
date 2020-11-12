@@ -9,6 +9,7 @@ $xtar = new \Xeno\Compress\Tar();
 $xtar->addFile('../dir/file.jpg');
 $xtar->addFile('file.html', 'public_html/index.html');
 $xtar->addFile('../dir/file.js', 'public_html/script.js');
+$xtar->addString('string contents', 'string.txt');
 
 // file
 $xtar->file('test.tar.bz2');

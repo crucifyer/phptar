@@ -8,6 +8,13 @@ class Tar
 	const NONE = 0, GZ = 1, BZ = 2, DETECT = 99;
 	private $headers = [], $f = [];
 
+	private function addBlock($block) {
+		// star ext header not implemented
+		if(strlen($block['name']) > 99) throw new \ErrorException('embed filename less then 100 bytes');
+		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
+		$this->headers[] = $block;
+	}
+
 	public function addFile($file, $name = '', $permis = 0644, $uid = 0, $gid = 0, $uname = 'root', $gname = 'root') {
 		$block = [
 			'file' => $file,
@@ -19,26 +26,22 @@ class Tar
 			'uname' => $uname,
 			'gname' => $gname
 		];
-		// star ext header not implemented
-		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
-		$this->headers[] = $block;
+		$this->addBlock($block);
 	}
 
 	public function addString($string, $name, $permis = 0644, $uid = 0, $gid = 0, $uname = 'root', $gname = 'root') {
 		$block = [
 			'file' => null,
 			'body' => $string,
-			'size' => strlen($file),
-			'name' => $name ? $name : basename($file),
+			'size' => strlen($string),
+			'name' => $name,
 			'permis' => $permis,
 			'uid' => $uid,
 			'gid' => $gid,
 			'uname' => $uname,
 			'gname' => $gname
 		];
-		// star ext header not implemented
-		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
-		$this->headers[] = $block;
+		$this->addBlock($block);
 	}
 
 	private function makeHeader($block) {

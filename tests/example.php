@@ -7,6 +7,7 @@ $xtar = new \Xeno\Compress\Tar();
 $xtar->addFile('../src/Compress/Tar.php');
 $xtar->addFile('example.php', 'exam/example.php');
 $xtar->addFile('../composer.json');
+$xtar->addString('string contents', 'string.txt');
 
 // file
 $xtar->file('test.tar.bz2');
