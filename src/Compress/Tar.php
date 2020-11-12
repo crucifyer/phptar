@@ -12,7 +12,7 @@ class Tar
 		// star ext header not implemented
 		if($block['name'] == '') throw new \ErrorException('embed filename needed');
 		if($block['name'][0] == '/') throw new \ErrorException('embed filename cannot start /');
-		if(strlen($block['name']) > 99) throw new \ErrorException('embed filename less then 100 bytes');
+		if(strlen($block['name']) > 99) throw new \ErrorException('embed filename must be less then 100 bytes');
 		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
 		$this->headers[] = $block;
 	}
