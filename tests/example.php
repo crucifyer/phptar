@@ -10,7 +10,8 @@ $xtar->addFile('../composer.json');
 $xtar->addString('string contents', 'string.txt');
 
 // file
-$xtar->file('test.tar.bz2');
+$xtar->save('test.tar.bz2');
+exit;
 
 // stream
 $xtar->stream('test.tar.bz2'); // browser realtime compress download

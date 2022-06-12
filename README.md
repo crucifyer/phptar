@@ -12,7 +12,7 @@ $xtar->addFile('../dir/file.js', 'public_html/script.js');
 $xtar->addString('string contents', 'string.txt');
 
 // file
-$xtar->file('test.tar.bz2');
+$xtar->save('test.tar.bz2');
 
 // stream
 $xtar->stream('test.tar.bz2'); // browser realtime compress download
