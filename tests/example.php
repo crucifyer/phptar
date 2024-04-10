@@ -6,7 +6,7 @@ include_once '../vendor/autoload.php';
 $xtar = new \Xeno\Compress\Tar();
 $xtar->addFile('../src/Compress/Tar.php');
 $xtar->addFile('example.php', 'exam/example.php');
-$xtar->addFile('../composer.json');
+$xtar->addFile('../composer.json', '../dir/.../test///..//');
 $xtar->addString('string contents', 'string.txt');
 
 // file

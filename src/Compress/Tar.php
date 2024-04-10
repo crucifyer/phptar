@@ -10,14 +10,24 @@ class Tar
 
 	private function addBlock($block) {
 		// star ext header not implemented
-		if($block['name'] == '') throw new \ErrorException('embed filename needed');
-		if($block['name'][0] == '/') throw new \ErrorException('embed filename cannot start /');
-		if(strlen($block['name']) > 99) throw new \ErrorException('embed filename must be less then 100 bytes');
-		if($block['size'] > 077777777777) throw new \ErrorException('file size over', E_USER_ERROR);
+		if($block['name'] == '') throw new \ErrorException('embed filename needed.');
+		while(true) {
+			$name = preg_replace(['~[^/]+/\.\./~', '~^\.*/~', '~/\.{3,}/~', '~/\./~', '~/{2,}~'], ['', '', '/', '/', '/'], $block['name']);
+			if($block['name'] == $name) break;
+			$block['name'] = $name;
+		}
+		if(substr($block['name'], -1) == '/') {
+			if(!$block['file']) throw new \ErrorException('embed filename needed. '.$block['name']);
+			$block['name'] = $block['name'].basename($block['file']);
+		}
+
+		if(strlen($block['name']) > 99) throw new \ErrorException('embed filename must be less then 100 bytes. '.$block['name']);
+		if($block['size'] > 077777777777) throw new \ErrorException('file size over.', E_USER_ERROR);
 		$this->headers[] = $block;
 	}
 
 	public function addFile($file, $name = '', $permis = 0644, $uid = 0, $gid = 0, $uname = 'root', $gname = 'root') {
+		if(!file_exists($file)) throw new \ErrorException('file not found. '.$file);
 		$block = [
 			'file' => $file,
 			'size' => filesize($file),
@@ -50,7 +60,7 @@ class Tar
 		// posix
 		$header = sprintf(
 			"%99s\0%07o\0%07o\0%07o\0%011o\0%011o\0",
-			str_pad($block['name'], 99, "\0"), $block['permis'], $block['uid'], $block['gid'], $block['size'], filemtime($block['file'])
+			str_pad($block['name'], 99, "\0"), $block['permis'], $block['uid'], $block['gid'], $block['size'], $block['file'] ? filemtime($block['file']) : time()
 		);
 
 		$offset = strlen($header);
